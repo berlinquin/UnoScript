@@ -1,0 +1,3 @@
+*.swp
+lex.yy.c
+ui
