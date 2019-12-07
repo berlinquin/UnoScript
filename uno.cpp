@@ -14,7 +14,9 @@ int main(int argc, char *argv[])
    // The program stack
    std::stack<card_t> stack;
 
-   while (yylex() != 0)
+   card_t next_card;
+
+   while (yylex(&next_card) != 0)
    {
 
    }
