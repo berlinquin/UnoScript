@@ -21,15 +21,20 @@ namespace {
    card_t registers[4][10];
 
    // The different modes the head can be in
-   enum { READ, SCAN } mode;
+   enum { READ, SCAN, CONDITIONAL_READ, CONDITIONAL_SCAN } mode;
 
    // The jump direction
    enum { LEFT, RIGHT } seek_direction;
+
+   // The marker for the end of the most recent conditional
+   card_t endif;
 };
 
 void process_symbol(card_t& read, card_t& top);
 
 void drawTwo(card_t operation);
+
+bool matches(const card_t& a, card_t& b);
 
 int main(int argc, char *argv[])
 {
@@ -62,7 +67,16 @@ int main(int argc, char *argv[])
       }
 
       // Handle the card based on the current mode
-      if (mode == READ)
+      if (mode == CONDITIONAL_READ)
+      {
+         if (matches(next_card, endif))
+         {
+            mode = READ;
+            head++;
+            continue;
+         }
+      }
+      if (mode == READ || mode == CONDITIONAL_READ)
       {
          // Examine the top of the stack
          card_t top_card;
@@ -121,6 +135,8 @@ int main(int argc, char *argv[])
          else if (next_card.type == DRAW4)
          {
          }
+         // Increment the head for next iteration
+         head++;
       }
       else if (mode == SCAN)
       {
@@ -200,9 +216,23 @@ void drawTwo(card_t operation)
             stack.push(a);
             break;
          case BLUE:
+            if (b.digit)
+            {
+               mode = CONDITIONAL_READ;
+            }
+            else
+            {
+               mode = CONDITIONAL_SCAN;
+            }
+            endif = a;
             break;
       }
    }
+}
+
+bool matches(const card_t& a, card_t& b)
+{
+   return (a.type == b.type) && (a.color == b.color) && (a.digit == b.digit);
 }
 
 int read_symbol_under_head(card_t *card)
