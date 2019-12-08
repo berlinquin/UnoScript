@@ -89,6 +89,7 @@ Also note that the stack manipulation operators are borrowed directly from Forth
 see the [Forth manual](https://www.forth.com/starting-forth/2-stack-manipulation-operators-arithmetic/#Chapter_Summary) for details.
 
 Here are the available draw2 operators.
+For the initial four mathematical operations, the color of the result takes the color of the top card (`y` in the stack diagram).
 
 Color card | Stack | Operation
 -----------|-------|----------
