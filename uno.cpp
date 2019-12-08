@@ -1,10 +1,13 @@
+#include <iostream>
 #include <vector>
 #include <stack>
 
 #include "uno.h"
 
-int main(int argc, char *argv[])
-{
+/*
+ * Anonymous namespace to hold global variables
+ */
+namespace {
    // Hold the program source
    std::vector<card_t> tape;
 
@@ -16,26 +19,32 @@ int main(int argc, char *argv[])
 
    // The different modes the head can be in
    enum { READ, SCAN } mode;
-   mode = READ;
 
    // The jump direction
    enum { LEFT, RIGHT } seek_direction;
-   seek_direction = RIGHT;
+};
 
-   card_t next_card;
+void process_symbol(card_t& read, card_t& top);
+
+
+int main(int argc, char *argv[])
+{
+   mode = READ;
+   seek_direction = RIGHT;
    /*
     * Invariants:
     * head >= 0
     */
+   card_t next_card;
    while (true)
    {
       // Read the symbol under the head
       if (head == tape.size())
       {
          // Need to read in the next symbol
-         if (yylex(&next_card == 0);
+         if (yylex(&next_card) == 0);
          {
-            printf("Reached end of input\n");
+            std::cout << "Reached end of input";
             break;
          }
          tape.push_back(next_card);
@@ -57,11 +66,31 @@ int main(int argc, char *argv[])
          }
          else
          {
-            top_card = stack.pop();
+            top_card = stack.top();
          }
+         process_symbol(next_card, top_card);
+      }
+      else if (mode == SCAN)
+      {
+         // Check to see if match found
       }
 
    }
 
    return 0;
+}
+
+int read_symbol_under_head(card_t *card)
+{
+   return 0;
+}
+
+/*
+ * Update the intepreter state,
+ * where read is the symbol currently under the head
+ * and top is the symbol at the top of the stack
+ */
+void process_symbol(card_t& read, card_t& top)
+{
+
 }
