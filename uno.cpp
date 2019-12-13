@@ -21,7 +21,10 @@ namespace {
    card_t registers[4][10];
 
    // The different modes the head can be in
-   enum { READ, SCAN, CONDITIONAL_READ, CONDITIONAL_SCAN } mode;
+   enum { READ, SCAN } mode;
+
+   // True if inside the scope of a conditional
+   bool conditional;
 
    // The jump direction
    enum { LEFT, RIGHT } seek_direction;
@@ -41,6 +44,7 @@ int main(int argc, char *argv[])
    // Set head over the first item on tape, initialize mode and seek direction
    head = 0;
    mode = READ;
+   conditional = false;
    seek_direction = RIGHT;
    /*
     * Invariants:
@@ -67,17 +71,15 @@ int main(int argc, char *argv[])
       }
 
       // Handle the card based on the current mode
-      if (mode == CONDITIONAL_READ)
+      if (mode == READ)
       {
-         if (matches(next_card, endif))
+         if (conditional && matches(next_card, endif))
          {
-            mode = READ;
+            conditional = false;
             head++;
             continue;
          }
-      }
-      if (mode == READ || mode == CONDITIONAL_READ)
-      {
+
          // Examine the top of the stack
          card_t top_card;
          if (stack.empty())
@@ -218,12 +220,13 @@ void drawTwo(card_t operation)
          case BLUE:
             if (b.digit)
             {
-               mode = CONDITIONAL_READ;
+               mode = READ;
             }
             else
             {
-               mode = CONDITIONAL_SCAN;
+               mode = SCAN;
             }
+            conditional = true;
             endif = a;
             break;
       }
