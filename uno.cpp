@@ -29,16 +29,20 @@ namespace {
    // Which conditional and which branch is being executed
    enum { IF, IF_BRANCH, ELSE_BRANCH } conditional_mode;
 
-   // The jump direction
-   enum { LEFT, RIGHT } seek_direction;
+   // True if head should seek to the right
+   bool seek_right;
 
    // Markers for the most recent conditional
    card_t else_marker, endif;
+
+   // Marker for skip and reverse
+   card_t marker;
 };
 
 void process_symbol(card_t& read, card_t& top);
 
 void drawTwo(card_t operation);
+void drawFour(card_t operation);
 
 bool matches(const card_t& a, card_t& b);
 
@@ -48,7 +52,7 @@ int main(int argc, char *argv[])
    head = 0;
    mode = READ;
    conditional = false;
-   seek_direction = RIGHT;
+   seek_right = true;
    /*
     * Invariants:
     * head >= 0
@@ -139,23 +143,51 @@ int main(int argc, char *argv[])
                   break;
                case DRAW4:
                   // based on value of next_card, do operation on top four symbols
+                  drawFour(top_card);
                   break;
             }
          }
          else if (next_card.type == WILD)
          {
+            stack.push(top_card);
+            if (top_card.type == COLOR)
+            {
+               stack.push(next_card);
+            }
          }
-         else if (next_card.type == SKIP)
+         else if (next_card.type == SKIP || next_card.type == REVERSE)
          {
+            // if type REVERSE, flip the seek direction
+            seek_right ^= next_card.type == REVERSE;
+            switch(top_card.type)
+            {
+               case COLOR:
+               case WILD: // use top card as marker
+                  mode = SCAN;
+                  marker = top_card;
+                  stack.push(top_card);
+                  stack.push(next_card);
+                  break;
+               case DRAW2:
+               case DRAW4: // no-op, keep operator on stack
+                  stack.push(top_card);
+                  break;
+            }
          }
-         else if (next_card.type == REVERSE)
+         else if (next_card.type == DRAW2 || next_card.type == DRAW4)
          {
-         }
-         else if (next_card.type == DRAW2)
-         {
-         }
-         else if (next_card.type == DRAW4)
-         {
+            switch(top_card.type)
+            {
+               case COLOR:
+               case WILD: // push operator onto stack
+                  stack.push(top_card);
+                  stack.push(next_card);
+                  break;
+               case DRAW2:
+               case DRAW4: // replace operator on stack
+                  stack.push(next_card);
+                  break;
+            }
          }
          // Increment the head for next iteration
          head++;
