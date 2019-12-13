@@ -26,11 +26,14 @@ namespace {
    // True if inside the scope of a conditional
    bool conditional;
 
+   // Which conditional and which branch is being executed
+   enum { IF, IF_BRANCH, ELSE_BRANCH } conditional_mode;
+
    // The jump direction
    enum { LEFT, RIGHT } seek_direction;
 
-   // The marker for the end of the most recent conditional
-   card_t endif;
+   // Markers for the most recent conditional
+   card_t else_marker, endif;
 };
 
 void process_symbol(card_t& read, card_t& top);
@@ -73,11 +76,28 @@ int main(int argc, char *argv[])
       // Handle the card based on the current mode
       if (mode == READ)
       {
-         if (conditional && matches(next_card, endif))
+         // If inside a conditional, check to see if at the end of a branch
+         if (conditional)
          {
-            conditional = false;
-            head++;
-            continue;
+            if (conditional_mode == IF && matches(next_card, endif))
+            {
+               head++;
+               conditional = false;
+               continue;
+            }
+            else if (conditional_mode == IF_BRANCH && matches(next_card, else_marker))
+            {
+               head++;
+               mode = SCAN;
+               continue;
+            }
+            else if (conditional_mode == ELSE_BRANCH && matches(next_card, endif))
+            {
+               head++;
+               conditional = false;
+               mode = READ;
+               continue;
+            }
          }
 
          // Examine the top of the stack
@@ -218,6 +238,9 @@ void drawTwo(card_t operation)
             stack.push(a);
             break;
          case BLUE:
+            conditional = true;
+            conditional_mode = IF;
+            endif = a;
             if (b.digit)
             {
                mode = READ;
@@ -226,8 +249,81 @@ void drawTwo(card_t operation)
             {
                mode = SCAN;
             }
+            break;
+      }
+   }
+}
+
+/*
+ * Perform the given operation on the top four values of stack
+ */
+void drawFour(card_t operation)
+{
+   // Read top four symbols from stack
+   card_t top_four[4];
+   for (int i = 0; i < 4; i++)
+   {
+      top_four[i] = stack.top();
+      stack.pop();
+   }
+
+   if (operation.digit == 1)
+   {
+     switch (operation.color)
+     {
+        case RED: // 2Swap
+          stack.push(top_four[1]);
+          stack.push(top_four[0]);
+          stack.push(top_four[3]);
+          stack.push(top_four[2]);
+          break;
+        case YELLOW: // 2Dup
+          stack.push(top_four[3]);
+          stack.push(top_four[2]);
+          stack.push(top_four[1]);
+          stack.push(top_four[0]);
+          stack.push(top_four[1]);
+          stack.push(top_four[0]);
+          break;
+        case GREEN: // 2Over
+          stack.push(top_four[3]);
+          stack.push(top_four[2]);
+          stack.push(top_four[1]);
+          stack.push(top_four[0]);
+          stack.push(top_four[3]);
+          stack.push(top_four[2]);
+          break;
+        case BLUE: // 2Drop
+          stack.push(top_four[3]);
+          stack.push(top_four[2]);
+          break;
+     }
+   }
+   else if (operation.digit == 2)
+   {
+      switch(operation.color)
+      {
+         case RED: // Rot
+            stack.push(top_four[3]);
+            stack.push(top_four[1]);
+            stack.push(top_four[0]);
+            stack.push(top_four[2]);
+            break;
+         case BLUE: // if/else/endif
+            stack.push(top_four[3]);
             conditional = true;
-            endif = a;
+            else_marker = top_four[1];
+            endif = top_four[0];
+            if (top_four[2].digit)
+            {
+               mode = READ;
+               conditional_mode = IF_BRANCH;
+            }
+            else
+            {
+               mode = SCAN;
+               conditional_mode = ELSE_BRANCH;
+            }
             break;
       }
    }
