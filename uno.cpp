@@ -39,8 +39,6 @@ namespace {
    card_t marker;
 };
 
-void process_symbol(card_t& read, card_t& top);
-
 void drawTwo(card_t operation);
 void drawFour(card_t operation);
 
@@ -194,7 +192,40 @@ int main(int argc, char *argv[])
       }
       else if (mode == SCAN)
       {
+         // If in the middle of a conditional, check for conditional markers
+         if (conditional)
+         {
+            if (conditional_mode == IF_BRANCH && matches(next_card, endif))
+            {
+               conditional = false;
+               mode = READ;
+            }
+            else if (conditional_mode == ELSE_BRANCH && matches(next_card, else_marker))
+            {
+               mode = READ;
+            }
+            head++;
+         }
          // Check to see if match found
+         else
+         {
+            if (matches(next_card, marker))
+            {
+               mode = READ;
+               head++;
+            }
+            else
+            {
+               if (seek_right)
+               {
+                  head++;
+               }
+               else
+               {
+                  head--;
+               }
+            }
+         }
       }
 
    }
@@ -366,17 +397,3 @@ bool matches(const card_t& a, card_t& b)
    return (a.type == b.type) && (a.color == b.color) && (a.digit == b.digit);
 }
 
-int read_symbol_under_head(card_t *card)
-{
-   return 0;
-}
-
-/*
- * Update the intepreter state,
- * where read is the symbol currently under the head
- * and top is the symbol at the top of the stack
- */
-void process_symbol(card_t& read, card_t& top)
-{
-
-}
