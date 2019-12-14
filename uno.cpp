@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
       if (head == tape.size())
       {
          // Read in the next symbol
-         if (yylex(&next_card) == 0);
+         if (yylex(&next_card) == 0)
          {
             std::cout << "Reached end of input";
             break;
