@@ -1,6 +1,6 @@
-default: uno.h uno.cpp uno.l
+default: uno.h uno.cpp uno.l cardstack.h cardstack.cpp
 	lex uno.l
-	g++ -g lex.yy.c uno.cpp -o ui
+	g++ lex.yy.c uno.cpp cardstack.cpp -o ui
 
 clean:
 	rm lex.yy.c

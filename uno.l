@@ -30,6 +30,8 @@ reverse { *card = build_card(REVERSE); return REVERSE; }
 draw2   { *card = build_card(DRAW2); return DRAW2; }
 draw4   { *card = build_card(DRAW4); return DRAW4; }
 
+[ \n\t] { /* ignore whitespace */ }
+
 %%
 
 card_t build_card(card_type_t card_type)
