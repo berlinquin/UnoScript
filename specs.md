@@ -103,7 +103,7 @@ g1 | `( x y -- x y x )` | Over
 b1 | `( x -- )` | Drop
 r2 | `( x y -- x )` | Put value `x` in its color array at index `y % 10` 
 y2 | `( y -- array[y] )` | Get the value of the color array at index `y % 10` and push it to the stack
-g2 | `( x -- x )` | Print the ascii character with the value of `x`
+g2 | `( x -- )` | Print the ascii character with the value of `x`
 b2 | `( x y -- )` | if/endif. If `x` is true, then execute code until symbol `y` is encountered. Otherwise skip directly to symbol `y`.
 
 Here are the available draw4 operators.

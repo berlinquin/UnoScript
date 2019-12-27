@@ -296,7 +296,6 @@ void drawTwo(card_t operation)
          case GREEN:
             printf("%c", a.digit);
             stack.push(b);
-            stack.push(a);
             break;
          case BLUE:
             conditional = true;
