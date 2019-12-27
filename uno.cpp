@@ -3,6 +3,7 @@
 #include <stack>
 
 #include "uno.h"
+#include "cardstack.h"
 
 /*
  * Anonymous namespace to hold global variables
@@ -15,7 +16,7 @@ namespace {
    int head;
 
    // Program stack
-   std::stack<card_t> stack;
+   CardStack stack;
 
    // Program random-access storage
    card_t registers[4][10];
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
          // Read in the next symbol
          if (yylex(&next_card) == 0)
          {
-            std::cout << "Reached end of input";
+            std::cout << "Reached end of input" << std::endl;
             break;
          }
          tape.push_back(next_card);
@@ -102,18 +103,9 @@ int main(int argc, char *argv[])
             }
          }
 
-         // Examine the top of the stack
-         card_t top_card;
-         if (stack.empty())
-         {
-            top_card.type = WILD;
-         }
-         else
-         {
-            // Get a copy of the top card and pop from stack
-            top_card = stack.top();
-            stack.pop();
-         }
+         // Get a copy of the top card and pop from stack
+         card_t top_card = stack.top();
+         stack.pop();
 
          // Look at the symbol under the head, then the top of the stack
          if (next_card.type == COLOR)
@@ -123,6 +115,7 @@ int main(int argc, char *argv[])
                case COLOR: 
                   if (next_card.color == top_card.color)
                   {
+                     // printf("modify color\n");
                      top_card.digit = top_card.digit * 10 + next_card.digit;
                      stack.push(top_card);
                   }
@@ -133,15 +126,16 @@ int main(int argc, char *argv[])
                   }
                   break;
                case WILD:
+                  // printf("push card\n");
                   stack.push(next_card);
                   break;
                case DRAW2:
                   // based on value of next_card, do operation on top two symbols
-                  drawTwo(top_card);
+                  drawTwo(next_card);
                   break;
                case DRAW4:
                   // based on value of next_card, do operation on top four symbols
-                  drawFour(top_card);
+                  drawFour(next_card);
                   break;
             }
          }
@@ -178,6 +172,7 @@ int main(int argc, char *argv[])
             {
                case COLOR:
                case WILD: // push operator onto stack
+                  // printf("push operator\n");
                   stack.push(top_card);
                   stack.push(next_card);
                   break;
@@ -238,12 +233,15 @@ int main(int argc, char *argv[])
  */
 void drawTwo(card_t operation)
 {
+   // printf("drawtwo()\n");
    // Read top two symbols from stack
    card_t a = stack.top();
    stack.pop();
    card_t b = stack.top();
    stack.pop();
    
+   // printf("operation: type: %d, color: %d, digit %d\n", operation.type, operation.color, operation.digit);
+   // printf("stack: type: %d, color: %d, digit %d\n", a.type, a.color, a.digit);
    if (operation.digit == 0)
    {
      switch (operation.color)
