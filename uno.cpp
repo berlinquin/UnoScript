@@ -312,6 +312,57 @@ void drawTwo(card_t operation)
             break;
       }
    }
+   else if (operation.digit == 3)
+   {
+      switch (operation.color)
+      {
+         case RED:
+            a.digit = b.digit < a.digit;
+            break;
+         case YELLOW:
+            a.digit = b.digit > a.digit;
+            break;
+         case GREEN:
+            a.digit = b.digit <= a.digit;
+            break;
+         case BLUE:
+            a.digit = b.digit >= a.digit;
+            break;
+      }
+      stack.push(a);
+   }
+   else if (operation.digit == 4)
+   {
+      switch (operation.color)
+      {
+         case RED:
+            a.digit = b.digit == a.digit;
+            break;
+         case YELLOW:
+            a.digit = b.digit != a.digit;
+            break;
+         case GREEN:
+            a.digit = b.digit || a.digit;
+            break;
+         case BLUE:
+            a.digit = b.digit && a.digit;
+            break;
+      }
+      stack.push(a);
+   }
+   else if (operation.digit == 5)
+   {
+      switch (operation.color)
+      {
+         case RED:
+            a.digit = !a.digit;
+            stack.push(b);
+            stack.push(a);
+            break;
+         default:
+            break;
+      }
+   }
 }
 
 /*

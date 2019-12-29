@@ -105,6 +105,18 @@ r2 | `( x y -- x )` | Put value `x` in its color array at index `y % 10`
 y2 | `( y -- array[y] )` | Get the value of the color array at index `y % 10` and push it to the stack
 g2 | `( x -- )` | Print the ascii character with the value of `x`
 b2 | `( x y -- )` | if/endif. If `x` is true, then execute code until symbol `y` is encountered. Otherwise skip directly to symbol `y`.
+r3 | `( x y -- x < y )` | Less than
+y3 | `( x y -- x > y )` | Greater than
+g3 | `( x y -- x <= y )` | leq
+b3 | `( x y -- x >= y )` | geq
+r4 | `( x y -- x == y )` | Equals
+y4 | `( x y -- x != y )` | Not equals
+g4 | `( x y -- x || y )` | Logical or
+b4 | `( x y -- x && y )` | Logical and
+r5 | `( x -- !x )` | Logical not
+y5 |
+g5 |
+b5 |
 
 Here are the available draw4 operators.
 
