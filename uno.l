@@ -31,6 +31,7 @@ draw2   { *card = build_card(DRAW2); return DRAW2; }
 draw4   { *card = build_card(DRAW4); return DRAW4; }
 
 [ \n\t] { /* ignore whitespace */ }
+^#.*$   { /* ignore line comments */ }
 
 %%
 
