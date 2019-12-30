@@ -142,20 +142,19 @@ or with the if/endif and if/else/endif operators.
 
 ## Skip & Reverse
 
-Both the skip and reverse constructs take two parameters: the top value of the stack and the seek direction.
-The top value of the stack is popped, and the head moves in the seek direction (which is set to the right at runtime) until it encounters that exact value again.
-When a match is found, the head moves to the right, without pushing the match to the stack, and resumes execution.
+Both the skip and reverse constructs control the flow of the program.
+When read by the head, the top value of the stack is popped, and the head moves either left or right until it encounters that exact value again or reaches either end of the tape.
 
-Reverse differs from skip in that it flips the value of the seek direction after the match has been found.
+Construct | Stack | Behavior
+----------|-------|---------
+skip      | `( x -- )` | Skip moves the head *right* until a matching `x` is found, or the end of the program is reached
+reverse   | `( x -- )` | Reverse moves the head *left* until a matching `x` is found, or the beginning of the program is reached
 
-Construct | Stack | Behavior | Seek direction changed
-----------|-------|----------|-----------------------
-skip      | `( x -- )` | Skip moves the head in the seek direction until a matching `x` is found, or the beginning/end of the program is reached | No
-reverse   | `( x -- )` | Reverse moves the head in the seek direction until a matching `x` is found, or the beginning/end of the program is reached | Yes
-
-If no match if found, then the head is either at the end of the program or the beginning.
-If at the beginning, the seek direction is reset to point to the right and execution resumes.
-If at the end, then the program exits without error.
+For both constructs:
+- If a match is found, the head moves to the right, without pushing the match to the stack, and resumes execution.
+- If no match if found, then the head is either at the end of the program or the beginning.
+    - If at the beginning, execution resumes.
+    - If at the end, then the program exits without error.
 
 ## Conditional operators
 

@@ -149,8 +149,8 @@ int main(int argc, char *argv[])
          }
          else if (next_card.type == SKIP || next_card.type == REVERSE)
          {
-            // if type REVERSE, flip the seek direction
-            seek_right ^= next_card.type == REVERSE;
+            // if type SKIP, seek to the right
+            seek_right = next_card.type == SKIP;
             switch(top_card.type)
             {
                case COLOR:
