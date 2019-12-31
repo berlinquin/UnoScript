@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <string>
 
 #include "uno.h"
 #include "cardstack.h"
@@ -48,7 +49,8 @@ namespace {
 
 void drawTwo(card_t operation);
 void drawFour(card_t operation);
-
+void printTape();
+std::string cardToString(const card_t& card);
 bool matches(const card_t& a, card_t& b);
 
 int main(int argc, char *argv[])
@@ -266,6 +268,11 @@ int main(int argc, char *argv[])
          }
       }
 
+      // Print additional output for each iteration if verbose mode requested
+      if (verbose)
+      {
+         printTape();
+      }
    }
 
    return 0;
@@ -483,6 +490,94 @@ void drawFour(card_t operation)
             break;
       }
    }
+}
+
+// Print 5 values on the tape, indicating the position of the head
+void printTape()
+{
+   // Bound start and stop between [0, tape.size]
+   int start = std::max(head - 2, 0);
+   int stop = std::min(start + 5, (int) tape.size());
+   int len = stop - start;
+
+   // Return early if tape is empty
+   if (len == 0)
+   {
+      printf("[Empty tape]\n");
+      return;
+   }
+
+   // Print a top row of dashes
+   int num_dashes = (len*6)+1;
+   for (int i = 0; i < num_dashes; i++)
+   {
+      printf("-");
+   }
+   printf("\n");
+
+   // Print each card
+   for (int i = start; i < stop; i++)
+   {
+      printf("|%-5s", cardToString(tape.at(i)).data());
+   }
+   printf("|\n");
+
+   // Print a bottom row of dashes
+   for (int i = 0; i < num_dashes; i++)
+   {
+      printf("-");
+   }
+   printf("\n");
+
+   // Print the indices
+   for (int i = start; i < stop; i++)
+   {
+      printf("   %-4d", i);
+   } 
+
+
+   // Print the head location
+   /*
+   int head_loc = head;
+   for (int i = 0; i < num_dashes; i++)
+   {
+   }
+   */
+}
+
+std::string cardToString(const card_t& card)
+{
+   static char str[6];
+   switch(card.type)
+   {
+      case COLOR:
+         char c;
+         switch(card.color)
+         {
+            case RED:    c = 'r'; break;
+            case YELLOW: c = 'y'; break;
+            case GREEN:  c = 'g'; break;
+            case BLUE:   c = 'b'; break;
+         }
+         sprintf(str, "%c%1d", c, card.digit);
+         break;
+      case WILD:
+         strncpy(str, "wild", 6);
+         break;
+      case SKIP:
+         strncpy(str, "skip", 6);
+         break;
+      case REVERSE:
+         strncpy(str, "rev", 6);
+         break;
+      case DRAW2:
+         strncpy(str, "draw2", 6);
+         break;
+      case DRAW4:
+         strncpy(str, "draw4", 6);
+         break;
+   }
+   return std::string(str);
 }
 
 bool matches(const card_t& a, card_t& b)
