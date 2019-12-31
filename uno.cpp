@@ -229,7 +229,15 @@ int main(int argc, char *argv[])
                }
                else
                {
-                  head--;
+                  // Handle Reverse reaching start of tape
+                  if (head == 0)
+                  {
+                     mode = READ;
+                  }
+                  else
+                  {
+                     head--;
+                  }
                }
             }
          }
