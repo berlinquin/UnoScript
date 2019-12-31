@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
                   break;
                default:
                   // no-op
-                  printf("ERROR: found card type %d on stack\n", next_card.type);
+                  printf("ERROR: found card type %d on stack\n", top_card.type);
                   break;
             }
          }
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
                   break;
                default:
                   // no-op
-                  printf("ERROR: found card type %d on stack\n", next_card.type);
+                  printf("ERROR: found card type %d on stack\n", top_card.type);
                   break;
             }
          }
@@ -187,6 +187,10 @@ int main(int argc, char *argv[])
                case DRAW4: // replace operator on stack
                   stack.push(next_card);
                   break;
+               default:
+                  // no-op
+                  printf("ERROR: found card type %d on stack\n", top_card.type);
+                  break;
             }
          }
          // Increment the head for next iteration
@@ -197,7 +201,8 @@ int main(int argc, char *argv[])
          // If in the middle of a conditional, check for conditional markers
          if (conditional)
          {
-            if (conditional_mode == IF_BRANCH && matches(next_card, endif))
+            if ((conditional_mode == IF || conditional_mode == IF_BRANCH)
+                  && matches(next_card, endif))
             {
                conditional = false;
                mode = READ;
@@ -442,6 +447,8 @@ void drawFour(card_t operation)
                mode = SCAN;
                conditional_mode = ELSE_BRANCH;
             }
+            break;
+         default:
             break;
       }
    }
