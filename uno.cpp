@@ -137,6 +137,10 @@ int main(int argc, char *argv[])
                   // based on value of next_card, do operation on top four symbols
                   drawFour(next_card);
                   break;
+               default:
+                  // no-op
+                  printf("ERROR: found card type %d on stack\n", next_card.type);
+                  break;
             }
          }
          else if (next_card.type == WILD)
@@ -156,13 +160,16 @@ int main(int argc, char *argv[])
                case COLOR:
                case WILD: // use top card as marker
                   mode = SCAN;
+                  conditional = false;
                   marker = top_card;
-                  stack.push(top_card);
-                  stack.push(next_card);
                   break;
                case DRAW2:
                case DRAW4: // no-op, keep operator on stack
                   stack.push(top_card);
+                  break;
+               default:
+                  // no-op
+                  printf("ERROR: found card type %d on stack\n", next_card.type);
                   break;
             }
          }
@@ -246,13 +253,13 @@ void drawTwo(card_t operation)
    {
      switch (operation.color)
      {
-        case RED:
+        case RED: // Add
           b.digit += a.digit; break;
-        case YELLOW:
+        case YELLOW: // Subtract
           b.digit -= a.digit; break;
-        case GREEN:
+        case GREEN: // Multiply
           b.digit *= a.digit; break;
-        case BLUE:
+        case BLUE: // Divide
           b.digit /= a.digit; break;
      }
      b.color = a.color;
@@ -262,21 +269,21 @@ void drawTwo(card_t operation)
    {
       switch (operation.color)
       {
-         case RED:
+         case RED: // Swap
             stack.push(a);
             stack.push(b);
             break;
-         case YELLOW:
+         case YELLOW: // Dup
             stack.push(b);
             stack.push(a);
             stack.push(a);
             break;
-         case GREEN:
+         case GREEN: // Over
             stack.push(b);
             stack.push(a);
             stack.push(b);
             break;
-         case BLUE:
+         case BLUE: // Drop
             stack.push(b);
             break;
       }
@@ -285,19 +292,19 @@ void drawTwo(card_t operation)
    {
       switch (operation.color)
       {
-         case RED: 
+         case RED: // Write value
             registers[a.color][a.digit] = b;
             stack.push(b);
             break;
-         case YELLOW:
+         case YELLOW: // Read value
             stack.push(b);
             stack.push(registers[a.color][a.digit]);
             break;
-         case GREEN:
+         case GREEN: // Print value
             printf("%c", a.digit);
             stack.push(b);
             break;
-         case BLUE:
+         case BLUE: // if/endif
             conditional = true;
             conditional_mode = IF;
             endif = a;
@@ -316,16 +323,16 @@ void drawTwo(card_t operation)
    {
       switch (operation.color)
       {
-         case RED:
+         case RED: // Less than
             a.digit = b.digit < a.digit;
             break;
-         case YELLOW:
+         case YELLOW: // Greater than
             a.digit = b.digit > a.digit;
             break;
-         case GREEN:
+         case GREEN: // leq
             a.digit = b.digit <= a.digit;
             break;
-         case BLUE:
+         case BLUE: // geq
             a.digit = b.digit >= a.digit;
             break;
       }
@@ -335,16 +342,16 @@ void drawTwo(card_t operation)
    {
       switch (operation.color)
       {
-         case RED:
+         case RED: // Equals
             a.digit = b.digit == a.digit;
             break;
-         case YELLOW:
+         case YELLOW: // Not equals
             a.digit = b.digit != a.digit;
             break;
-         case GREEN:
+         case GREEN: // Logical or
             a.digit = b.digit || a.digit;
             break;
-         case BLUE:
+         case BLUE: // Logical and
             a.digit = b.digit && a.digit;
             break;
       }
@@ -354,7 +361,7 @@ void drawTwo(card_t operation)
    {
       switch (operation.color)
       {
-         case RED:
+         case RED: // Logical not
             a.digit = !a.digit;
             stack.push(b);
             stack.push(a);
