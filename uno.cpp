@@ -532,7 +532,7 @@ void printTape()
    // Print the indices
    for (int i = start; i < stop; i++)
    {
-      printf("   %-4d", i);
+      printf("  %-4d", i);
    } 
    printf("\n");
 
