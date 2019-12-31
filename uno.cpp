@@ -41,6 +41,9 @@ namespace {
 
    // Marker for skip and reverse
    card_t marker;
+
+   // True if verbose mode requested by user
+   bool verbose;
 };
 
 void drawTwo(card_t operation);
@@ -55,6 +58,18 @@ int main(int argc, char *argv[])
    mode = READ;
    conditional = false;
    seek_right = true;
+   verbose = false;
+
+   // Check for verbose flag
+   for (int i = 1; i < argc; i++)
+   {
+      if ((strcmp(argv[i], "-v") == 0)
+            || (strcmp(argv[i], "--verbose") == 0))
+            {
+               verbose = true;
+            }
+   }
+
    /*
     * Invariants:
     * head >= 0
