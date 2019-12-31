@@ -534,6 +534,7 @@ void printTape()
    {
       printf("   %-4d", i);
    } 
+   printf("\n");
 
 
    // Print the head location
