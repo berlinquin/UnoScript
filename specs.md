@@ -148,7 +148,7 @@ When read by the head, the top value of the stack is popped, and the head moves 
 Construct | Stack | Behavior
 ----------|-------|---------
 skip      | `( x -- )` | Skip moves the head *right* until a matching `x` is found, or the end of the program is reached
-reverse   | `( x -- )` | Reverse moves the head *left* until a matching `x` is found, or the beginning of the program is reached
+reverse   | `( x -- )` | Reverse moves the head *left* until a matching `x` is found, or the beginning of the program is reached. This will ignore the value to the left of the REVERSE, to prevent matching on the card just pushed to the stack.
 
 For both constructs:
 - If a match is found, the head moves to the right, without pushing the match to the stack, and resumes execution.

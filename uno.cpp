@@ -33,6 +33,9 @@ namespace {
    // True if head should seek to the right
    bool seek_right;
 
+   // The index of the active SKIP or REVERSE on the tape
+   int scan_index;
+
    // Markers for the most recent conditional
    card_t else_marker, endif;
 
@@ -138,7 +141,6 @@ int main(int argc, char *argv[])
                   drawFour(next_card);
                   break;
                default:
-                  // no-op
                   printf("ERROR: found card type %d on stack\n", top_card.type);
                   break;
             }
@@ -160,6 +162,7 @@ int main(int argc, char *argv[])
                case COLOR:
                case WILD: // use top card as marker
                   mode = SCAN;
+                  scan_index = head;
                   conditional = false;
                   marker = top_card;
                   break;
@@ -216,7 +219,12 @@ int main(int argc, char *argv[])
          // Check to see if match found
          else
          {
-            if (matches(next_card, marker))
+            if (!seek_right && (head == (scan_index - 1)))
+            {
+               // Ignore card to left of REVERSE
+               head--;
+            }
+            else if (matches(next_card, marker))
             {
                mode = READ;
                head++;
