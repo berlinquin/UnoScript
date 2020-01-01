@@ -73,22 +73,25 @@ int main(int argc, char *argv[])
    }
 
    /*
+    * Read in all cards from lexer
+    */
+   card_t next_card;
+   while (yylex(&next_card) != 0)
+   {
+      tape.push_back(next_card);
+   }
+
+   /*
     * Invariants:
     * head >= 0
     */
-   card_t next_card;
    while (true)
    {
       // Read the symbol under the head
       if (head == tape.size())
       {
-         // Read in the next symbol
-         if (yylex(&next_card) == 0)
-         {
-            std::cout << "Reached end of input" << std::endl;
-            break;
-         }
-         tape.push_back(next_card);
+         std::cout << "Reached end of input" << std::endl;
+         break;
       }
       else
       {
@@ -496,7 +499,8 @@ void drawFour(card_t operation)
 void printTape()
 {
    // Bound start and stop between [0, tape.size]
-   int start = std::max(head - 2, 0);
+   int start = (head / 5) * 5;
+   start = std::max(start, 0);
    int stop = std::min(start + 5, (int) tape.size());
    int len = stop - start;
 
