@@ -96,6 +96,12 @@ int main(int argc, char *argv[])
          next_card = tape.at(head);
       }
 
+      // Print additional output for each iteration if verbose mode requested
+      if (verbose)
+      {
+         printTape();
+      }
+
       // Handle the card based on the current mode
       if (mode == READ)
       {
@@ -266,12 +272,6 @@ int main(int argc, char *argv[])
                }
             }
          }
-      }
-
-      // Print additional output for each iteration if verbose mode requested
-      if (verbose)
-      {
-         printTape();
       }
    }
 
@@ -532,7 +532,16 @@ void printTape()
    // Print the indices
    for (int i = start; i < stop; i++)
    {
-      printf("  %-4d", i);
+      char prefix;
+      if (i == head)
+      {
+         prefix = '^';
+      }
+      else
+      {
+         prefix = ' ';
+      }
+      printf("%c %-4d", prefix, i);
    } 
    printf("\n");
 
