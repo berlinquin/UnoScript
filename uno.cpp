@@ -49,8 +49,12 @@ namespace {
 
 void drawTwo(card_t operation);
 void drawFour(card_t operation);
+
+// Methods to print output to screen
 void printTape();
 std::string cardToString(const card_t& card);
+void printStack();
+
 bool matches(const card_t& a, card_t& b);
 
 int main(int argc, char *argv[])
@@ -103,6 +107,7 @@ int main(int argc, char *argv[])
       if (verbose)
       {
          printTape();
+         printStack();
       }
 
       // Handle the card based on the current mode
@@ -548,15 +553,6 @@ void printTape()
       printf("%c %-4d", prefix, i);
    } 
    printf("\n");
-
-
-   // Print the head location
-   /*
-   int head_loc = head;
-   for (int i = 0; i < num_dashes; i++)
-   {
-   }
-   */
 }
 
 std::string cardToString(const card_t& card)
@@ -592,6 +588,63 @@ std::string cardToString(const card_t& card)
          break;
    }
    return std::string(str);
+}
+
+void printStack()
+{
+   card_t top_five[5];
+   stack.top(top_five, 5);
+
+   // Bound start and stop between [0, tape.size]
+   int start = (head / 5) * 5;
+   start = std::max(start, 0);
+   int stop = std::min(start + 5, (int) tape.size());
+   int len = stop - start;
+
+   // Return early if tape is empty
+   if (len == 0)
+   {
+      printf("[Empty tape]\n");
+      return;
+   }
+
+   // Print a top row of dashes
+   int num_dashes = (len*6)+1;
+   for (int i = 0; i < num_dashes; i++)
+   {
+      printf("-");
+   }
+   printf("\n");
+
+   // Print each card
+   for (int i = start; i < stop; i++)
+   {
+      printf("|%-5s", cardToString(tape.at(i)).data());
+   }
+   printf("|\n");
+
+   // Print a bottom row of dashes
+   for (int i = 0; i < num_dashes; i++)
+   {
+      printf("-");
+   }
+   printf("\n");
+
+   // Print the indices
+   for (int i = start; i < stop; i++)
+   {
+      char prefix;
+      if (i == head)
+      {
+         prefix = '^';
+      }
+      else
+      {
+         prefix = ' ';
+      }
+      printf("%c %-4d", prefix, i);
+   } 
+   printf("\n");
 }
 
 bool matches(const card_t& a, card_t& b)

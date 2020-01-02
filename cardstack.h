@@ -16,7 +16,7 @@ public:
 
    void push(const card_t& card);
    card_t top();
-   void top(card_t *cards[], int num);
+   void top(card_t cards[], int num);
    void pop();
 
 private:
