@@ -1,4 +1,5 @@
 #include <deque>
+#include "uno.h"
 #include "cardstack.h"
 
 /*
@@ -34,22 +35,6 @@ card_t CardStack::top()
    }
 }
 
-std::vector<card_t> CardStack::top(int num)
-{
-   std::deque<card_t>::reverse_iterator it = m_deque.rbegin();
-   std::vector<card_t> top_cards;
-   int i = 0;
-   const int top_of_stack = m_deque.size() - 1;
-   while (i < num && it != m_deque.rend())
-   {
-      card_t c = m_deque.at(top_of_stack - i);
-      top_cards.push_back(c);
-      i++;
-   }
-   return top_cards;
-}
-
-
 void CardStack::pop()
 {
    if (!m_deque.empty())
@@ -57,3 +42,45 @@ void CardStack::pop()
       m_deque.pop_back();
    }
 }
+
+void CardStack::print()
+{
+   int len = std::min(5, (int) m_deque.size());
+
+   // Return early if stack is empty
+   if (len == 0)
+   {
+      printf("[Empty stack]\n");
+      return;
+   }
+
+   // Print a top row of dashes
+   int num_dashes = (len*6)+1;
+   for (int i = 0; i < num_dashes; i++)
+   {
+      printf("-");
+   }
+   printf("\n");
+
+   // Print each card in top_five
+   std::deque<card_t>::reverse_iterator it = m_deque.rbegin();
+   int i = 0;
+   char str[6];
+   while (i < len && it != m_deque.rend())
+   {
+      cardToString(*it, str, 6);
+      printf("|%-5s", str);
+      // Increment counters
+      ++it;
+      ++i;
+   }
+   printf("|\n");
+
+   // Print a bottom row of dashes
+   for (int i = 0; i < num_dashes; i++)
+   {
+      printf("-");
+   }
+   printf("\n");
+}
+

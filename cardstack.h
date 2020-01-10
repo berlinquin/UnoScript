@@ -17,8 +17,10 @@ public:
 
    void push(const card_t& card);
    card_t top();
-   std::vector<card_t> top(int num);
    void pop();
+   
+   // Print the top five elements of the stack to standard out
+   void print();
 
 private:
    std::deque<card_t> m_deque;

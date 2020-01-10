@@ -52,10 +52,8 @@ void drawFour(card_t operation);
 
 // Methods to print output to screen
 void printTape();
-std::string cardToString(const card_t& card);
-void printStack();
 
-bool matches(const card_t& a, card_t& b);
+bool matches(const card_t& a, const card_t& b);
 
 int main(int argc, char *argv[])
 {
@@ -107,7 +105,7 @@ int main(int argc, char *argv[])
       if (verbose)
       {
          printTape();
-         printStack();
+         stack.print();
       }
 
       // Handle the card based on the current mode
@@ -525,9 +523,11 @@ void printTape()
    printf("\n");
 
    // Print each card
+   char str[6];
    for (int i = start; i < stop; i++)
    {
-      printf("|%-5s", cardToString(tape.at(i)).data());
+      cardToString(tape.at(i), str, 6);
+      printf("|%-5s", str);
    }
    printf("|\n");
 
@@ -555,9 +555,13 @@ void printTape()
    printf("\n");
 }
 
-std::string cardToString(const card_t& card)
+void cardToString(card_t card, char *str, int len)
 {
-   static char str[6];
+   if (len < 6)
+   {
+      fprintf(stderr, "Cannot print card into buffer of length %d\n", len);
+      return;
+   }
    switch(card.type)
    {
       case COLOR:
@@ -587,46 +591,9 @@ std::string cardToString(const card_t& card)
          strncpy(str, "draw4", 6);
          break;
    }
-   return std::string(str);
 }
 
-void printStack()
-{
-   std::vector<card_t> top_five = stack.top(5);
-   int len = top_five.size();
-
-   // Return early if stack is empty
-   if (len == 0)
-   {
-      printf("[Empty stack]\n");
-      return;
-   }
-
-   // Print a top row of dashes
-   int num_dashes = (len*6)+1;
-   for (int i = 0; i < num_dashes; i++)
-   {
-      printf("-");
-   }
-   printf("\n");
-
-   // Print each card in top_five
-   std::vector<card_t>::reverse_iterator it = top_five.rbegin();
-   for (; it != top_five.rend(); ++it)
-   {
-      printf("|%-5s", cardToString(*it).data());
-   }
-   printf("|\n");
-
-   // Print a bottom row of dashes
-   for (int i = 0; i < num_dashes; i++)
-   {
-      printf("-");
-   }
-   printf("\n");
-}
-
-bool matches(const card_t& a, card_t& b)
+bool matches(const card_t& a, const card_t& b)
 {
    return (a.type == b.type) && (a.color == b.color) && (a.digit == b.digit);
 }

@@ -36,6 +36,11 @@ typedef struct
 } card_t;
 
 /*
+ * Write a string representation of card to str, a buffer of the given length
+ */
+void cardToString(card_t card, char *str, int len);
+
+/*
  * Declare yylex method which will be implemented by flex
  */
 extern int yylex(card_t*);
