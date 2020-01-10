@@ -63,10 +63,11 @@ void CardStack::print()
    printf("\n");
 
    // Print each card in top_five
-   std::deque<card_t>::reverse_iterator it = m_deque.rbegin();
+   std::deque<card_t>::iterator it;
+   it = std::max(m_deque.begin(), m_deque.end() - 5);
    int i = 0;
    char str[6];
-   while (i < len && it != m_deque.rend())
+   while (i < len && it != m_deque.end())
    {
       cardToString(*it, str, 6);
       printf("|%-5s", str);
