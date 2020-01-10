@@ -74,7 +74,7 @@ void CardStack::print()
       ++it;
       ++i;
    }
-   printf("|\n");
+   printf("| (Stack)\n");
 
    // Print a bottom row of dashes
    for (int i = 0; i < num_dashes; i++)

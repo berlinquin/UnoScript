@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
       {
          printTape();
          stack.print();
+         printf("\n");
       }
 
       // Handle the card based on the current mode
@@ -529,7 +530,7 @@ void printTape()
       cardToString(tape.at(i), str, 6);
       printf("|%-5s", str);
    }
-   printf("|\n");
+   printf("| (Tape)\n");
 
    // Print a bottom row of dashes
    for (int i = 0; i < num_dashes; i++)
