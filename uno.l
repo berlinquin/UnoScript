@@ -6,7 +6,7 @@
 // define yylex() to accept a card_t out parameter
 #define YY_DECL int yylex(card_t *card)
 
-// method to return a card_t struct from card_type_t
+// return a card_t struct from card_type_t
 card_t build_card(card_type_t);
 %}
 

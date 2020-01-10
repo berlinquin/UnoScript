@@ -503,7 +503,7 @@ void drawFour(card_t operation)
 // Print 5 values on the tape, indicating the position of the head
 void printTape()
 {
-   // Bound start and stop between [0, tape.size]
+   // Build range [start, stop)
    int start = (head / 5) * 5;
    start = std::max(start, 0);
    int stop = std::min(start + 5, (int) tape.size());
@@ -592,19 +592,13 @@ std::string cardToString(const card_t& card)
 
 void printStack()
 {
-   card_t top_five[5];
-   stack.top(top_five, 5);
+   std::vector<card_t> top_five = stack.top(5);
+   int len = top_five.size();
 
-   // Bound start and stop between [0, tape.size]
-   int start = (head / 5) * 5;
-   start = std::max(start, 0);
-   int stop = std::min(start + 5, (int) tape.size());
-   int len = stop - start;
-
-   // Return early if tape is empty
+   // Return early if stack is empty
    if (len == 0)
    {
-      printf("[Empty tape]\n");
+      printf("[Empty stack]\n");
       return;
    }
 
@@ -616,10 +610,11 @@ void printStack()
    }
    printf("\n");
 
-   // Print each card
-   for (int i = start; i < stop; i++)
+   // Print each card in top_five
+   std::vector<card_t>::reverse_iterator it = top_five.rbegin();
+   for (; it != top_five.rend(); ++it)
    {
-      printf("|%-5s", cardToString(tape.at(i)).data());
+      printf("|%-5s", cardToString(*it).data());
    }
    printf("|\n");
 
@@ -628,22 +623,6 @@ void printStack()
    {
       printf("-");
    }
-   printf("\n");
-
-   // Print the indices
-   for (int i = start; i < stop; i++)
-   {
-      char prefix;
-      if (i == head)
-      {
-         prefix = '^';
-      }
-      else
-      {
-         prefix = ' ';
-      }
-      printf("%c %-4d", prefix, i);
-   } 
    printf("\n");
 }
 

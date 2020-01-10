@@ -1,12 +1,13 @@
 #ifndef CARDSTACK_H
 #define CARDSTACK_H
 
+#include <vector>
 #include <deque>
 #include "uno.h"
 
 /*
  * An adapter around std::deque which behaves as a stack.
- * It returns a WILD card if pop() is called on an empty stack.
+ * It returns a WILD card if top() is called on an empty stack.
  */
 class CardStack
 {
@@ -16,7 +17,7 @@ public:
 
    void push(const card_t& card);
    card_t top();
-   void top(card_t cards[], int num);
+   std::vector<card_t> top(int num);
    void pop();
 
 private:
