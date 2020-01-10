@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
       // Read the symbol under the head
       if (head == tape.size())
       {
-         std::cout << "Reached end of input" << std::endl;
+         // std::cout << "Reached end of input" << std::endl;
          break;
       }
       else
