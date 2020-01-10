@@ -1,6 +1,6 @@
-# Uno Language Specifications
+# UnoScript Specification
 
-Uno is a stack-based programming language inspired by the UNO card game.
+UnoScript is a stack-based programming language inspired by the UNO card game.
 It works from these design principles:
 
 - The alphabet consists of the set of cards in the UNO card game
@@ -23,7 +23,7 @@ A standard UNO deck contains:
 Translating these cards into symbols for the language, only standard number cards have retained their color.
 So, draw two, reverse, and skip cards of different colors are treated as identical.
 
-These cards are represented in an Uno program using the following symbols, expressed as regular expressions:
+These cards are represented in an UnoScript program using the following symbols, expressed as regular expressions:
 
 - `[bgry][0-9]` Represents a standard color card.
 The first character represents the color of the card, the second its value.
@@ -37,12 +37,12 @@ Also referred to as `color` throughout the document.
 
 # Model of Execution
 
-Before it begins to interpret an Uno program, the Uno interpreter initializes an empty stack capable of holding integers and symbols in the language.
+Before it begins to interpret an UnoScript program, the interpreter initializes an empty stack capable of holding integers and symbols in the language.
 It also initializes 4 independent arrays of integers, all of length ten.
 It also sets the seek direction, used by control flow constructs, to point to the right.
 Once these are initialized, the interpreter begins to read the program in.
 
-An Uno program consists of a linear sequence of the previously defined symbols.
+An UnoScript program consists of a linear sequence of the previously defined symbols.
 The interpreter has a head, initially positioned at the first symbol, that identifies the next symbol to be recognized.
 For each symbol that it recognizes, the interpreter can choose to read values from the stack, push values onto the stack,
 access one of the four arrays, and/or move the instruction pointer to the next instruction which should be executed.
