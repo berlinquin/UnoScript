@@ -6,7 +6,7 @@ EXTENDS Integers, Sequences
 
 \* Define the types of cards allowed in the stack and on the tape
 StackCard == { "color", "wild", "operator" }
-TapeCard  == StackCard
+TapeCard  == StackCard \union { "control" }
 
 \* The maximum length of the stack
 CONSTANT N
@@ -26,6 +26,12 @@ USInit == /\ stack = << >>
 Top(s) == IF Len(s) > 0
           THEN Head(s)
           ELSE "wild"
+
+\* If the sequence s is empty, return the empty sequence,
+\* Otherwise return the sequence with the first item removed
+Pop(s) == IF s = << >>
+          THEN s
+          ELSE Tail(s)
 
 \* Push item e onto stack s
 \* if this will not grow the stack past N elements
@@ -78,9 +84,25 @@ OperatorOnOperator == /\ head = "operator"
                       /\ head' \in TapeCard
                       /\ UNCHANGED stack
 
+ControlOnColor == /\ head = "control"
+                  /\ Top(stack) = "color"
+                  /\ head' \in TapeCard
+                  /\ stack' = Tail(stack)
+
+ControlOnWild == /\ head = "control"
+                 /\ Top(stack) = "wild"
+                 /\ head' \in TapeCard
+                 /\ stack' = Pop(stack)
+
+ControlOnOperator == /\ head = "control"
+                     /\ Top(stack) = "operator"
+                     /\ head' \in TapeCard
+                     /\ UNCHANGED stack
+
 USNext == \/ ColorOnColor \/ ColorOnWild \/ ColorOnOperator
           \/ WildOnColor \/ WildOnWild \/ WildOnOperator
           \/ OperatorOnColor \/ OperatorOnWild \/ OperatorOnOperator
+          \/ ControlOnColor \/ ControlOnWild \/ ControlOnOperator
 
 USSpec == USInit /\ [][USNext]_<<stack, head>>
 
@@ -89,5 +111,5 @@ THEOREM USSpec => [](USTypeOK /\ Len(stack) =< N)
 
 =============================================================================
 \* Modification History
-\* Last modified Sat Mar 27 15:25:10 CDT 2021 by quin
+\* Last modified Sat Mar 27 15:33:48 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
