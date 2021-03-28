@@ -1,9 +1,6 @@
 ----------------------------- MODULE UnoScript -----------------------------
 EXTENDS Integers, Sequences
 
-\* StackCard == { "color", "wild", "operator" }
-\* TapeCard  == StackCard \union { "control" }
-
 \* Define the types of cards allowed in the stack and on the tape
 StackCard == { "color", "wild", "operator" }
 TapeCard  == StackCard \union { "control" }
@@ -39,6 +36,24 @@ Push(s, e) == IF Len(s) < N
               THEN << e >> \o s
               ELSE s
 
+\* The draw2 operator takes a sequence as input
+\* and returns a set of all possible sequences after a draw2 operation is performed.
+draw2(s) ==
+  LET y == Top(s)
+      x == Top(Pop(s))
+      s_base == Pop(Pop(s))
+  IN { 
+       << y >>       \o s_base, \* mathematical operators +,-,*,/
+                                \* and logical operators <, >, <=, >=, ==, !=, ||, &&
+       << x, y >>    \o s_base, \* swap
+       << y, y, x >> \o s_base, \* dup
+       << x, y, x >> \o s_base, \* over
+       << x >>       \o s_base, \* drop, store, print
+       s_base,                  \* if/endif
+       s                        \* logical operator !
+     }
+     \union { << z, x >> \o s_base : z \in StackCard } \* load
+
 ColorOnColor == /\ head = "color"
                 /\ Top(stack) = "color"
                 /\ head' \in TapeCard
@@ -52,7 +67,7 @@ ColorOnWild == /\ head = "color"
 ColorOnOperator == /\ head = "color"
                    /\ Top(stack) = "operator"
                    /\ head' \in TapeCard
-                   /\ UNCHANGED stack \* TODO: implement operators
+                   /\ stack' \in { stack } \union draw2(stack)
 
 WildOnColor == /\ head = "wild"
                /\ Top(stack) = "color"
@@ -111,5 +126,5 @@ THEOREM USSpec => [](USTypeOK /\ Len(stack) =< N)
 
 =============================================================================
 \* Modification History
-\* Last modified Sat Mar 27 15:33:48 CDT 2021 by quin
+\* Last modified Sun Mar 28 12:47:56 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
