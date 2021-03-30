@@ -54,6 +54,29 @@ draw2(s) ==
      }
      \union { << z, x >> \o s_base : z \in StackCard } \* load
 
+\* The draw4 operator takes a sequence as input
+\* and returns a set of all possible sequences after a draw4 operation is performed.
+draw4(s) ==
+  LET s_a == Pop(s)
+        a == Top(s_a)
+      s_b == Pop(s_a)
+        b == Top(s_b)
+      s_c == Pop(s_b)
+        c == Top(s_c)
+      s_d == Pop(s_c)
+        d == Top(s_d)
+   s_base == Pop(s_d)
+       d2 == << a, b >>
+       d1 == << c, d >>
+  IN {
+       d1 \o d2         \o s_base, \* 2Swap
+       d2 \o d2 \o d1   \o s_base, \* 2Dup
+       d1 \o d2 \o d1   \o s_base, \* 2Over
+       d1               \o s_base, \* 2Drop
+       << c, b, a, d >> \o s_base, \* Rot
+       << d >>          \o s_base  \* if/else/endif
+     }
+
 ColorOnColor == /\ head = "color"
                 /\ Top(stack) = "color"
                 /\ head' \in TapeCard
@@ -67,7 +90,7 @@ ColorOnWild == /\ head = "color"
 ColorOnOperator == /\ head = "color"
                    /\ Top(stack) = "operator"
                    /\ head' \in TapeCard
-                   /\ stack' \in { stack } \union draw2(stack)
+                   /\ stack' \in { stack } \union draw2(stack) \union draw4(stack)
 
 WildOnColor == /\ head = "wild"
                /\ Top(stack) = "color"
@@ -126,5 +149,5 @@ THEOREM USSpec => [](USTypeOK /\ Len(stack) =< N)
 
 =============================================================================
 \* Modification History
-\* Last modified Mon Mar 29 19:41:03 CDT 2021 by quin
+\* Last modified Mon Mar 29 20:08:38 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
