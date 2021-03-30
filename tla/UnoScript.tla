@@ -32,16 +32,16 @@ Pop(s) == IF s = << >>
 
 \* Push item e onto stack s
 \* if this will not grow the stack past N elements
-Push(s, e) == IF Len(s) < N
+Push(s, e) == IF Len(s) < (N-1)
               THEN << e >> \o s
               ELSE s
 
 \* The draw2 operator takes a sequence as input
 \* and returns a set of all possible sequences after a draw2 operation is performed.
 draw2(s) ==
-  LET y == Top(s)
-      x == Top(Pop(s))
-      s_base == Pop(Pop(s))
+  LET y == Top(Pop(s))
+      x == Top(Pop(Pop(s)))
+      s_base == Pop(Pop(Pop(s))) \* Pop the operator and the next two cards off the stack
   IN { 
        << y >>       \o s_base, \* mathematical operators +,-,*,/
                                 \* and logical operators <, >, <=, >=, ==, !=, ||, &&
@@ -126,5 +126,5 @@ THEOREM USSpec => [](USTypeOK /\ Len(stack) =< N)
 
 =============================================================================
 \* Modification History
-\* Last modified Sun Mar 28 12:47:56 CDT 2021 by quin
+\* Last modified Mon Mar 29 19:41:03 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
