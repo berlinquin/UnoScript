@@ -2,14 +2,14 @@
 EXTENDS UnoScript, TLC
 
 \* CONSTANT definitions @modelParameterConstants:0N
-const_161695386062388000 == 
+const_1617155911955125000 == 
 8
 ----
 
 \* INVARIANT definition @modelCorrectnessInvariants:0
-inv_161695386062389000 ==
+inv_1617155911956126000 ==
 USTypeOK /\ Len(stack) =< (N)
 ----
 =============================================================================
 \* Modification History
-\* Created Sun Mar 28 12:51:00 CDT 2021 by quin
+\* Created Tue Mar 30 20:58:31 CDT 2021 by quin

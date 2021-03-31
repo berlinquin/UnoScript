@@ -14,6 +14,12 @@ VARIABLES stack, \* a sequence of StackCards
 USTypeOK == /\ stack \in Seq(StackCard)
             /\ head \in TapeCard
 
+\* Assert that there are no adjacent operator cards in sequence s
+NoAdjacentOperators(s) == \A i \in 1..(Len(s)-1) : s[i] /= "operator" \/ s[i] /= s[i+1]
+
+\* Assert properties about the stack that should always be true
+USStackInvariant == /\ NoAdjacentOperators(stack)
+
 \* The stack is initially empty, and head can be any card type
 USInit == /\ stack = << >>
           /\ head \in TapeCard
@@ -151,5 +157,5 @@ THEOREM USSpec => [](USTypeOK /\ Len(stack) =< N)
 
 =============================================================================
 \* Modification History
-\* Last modified Tue Mar 30 20:35:10 CDT 2021 by quin
+\* Last modified Tue Mar 30 20:57:57 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
