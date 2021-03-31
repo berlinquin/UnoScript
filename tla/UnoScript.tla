@@ -39,9 +39,11 @@ Push(s, e) == IF Len(s) < (N-1)
 \* The draw2 operator takes a sequence as input
 \* and returns a set of all possible sequences after a draw2 operation is performed.
 draw2(s) ==
-  LET y == Top(Pop(s))
-      x == Top(Pop(Pop(s)))
-      s_base == Pop(Pop(Pop(s))) \* Pop the operator and the next two cards off the stack
+  LET s_y == Pop(s)
+        y == Top(s_y)
+      s_x == Pop(s_y)
+        x == Top(s_x)
+   s_base == Pop(s_x)
   IN { 
        << y >>       \o s_base, \* mathematical operators +,-,*,/
                                 \* and logical operators <, >, <=, >=, ==, !=, ||, &&
@@ -52,7 +54,7 @@ draw2(s) ==
        s_base,                  \* if/endif
        s                        \* logical operator !
      }
-     \union { << z, x >> \o s_base : z \in StackCard } \* load
+     \union { << z, x >> \o s_base : z \in StackCard } \* load from memory
 
 \* The draw4 operator takes a sequence as input
 \* and returns a set of all possible sequences after a draw4 operation is performed.
@@ -73,7 +75,7 @@ draw4(s) ==
        d2 \o d2 \o d1   \o s_base, \* 2Dup
        d1 \o d2 \o d1   \o s_base, \* 2Over
        d1               \o s_base, \* 2Drop
-       << c, b, a, d >> \o s_base, \* Rot
+       << c, a, b, d >> \o s_base, \* Rot
        << d >>          \o s_base  \* if/else/endif
      }
 
@@ -137,10 +139,10 @@ ControlOnOperator == /\ head = "control"
                      /\ head' \in TapeCard
                      /\ UNCHANGED stack
 
-USNext == \/ ColorOnColor \/ ColorOnWild \/ ColorOnOperator
-          \/ WildOnColor \/ WildOnWild \/ WildOnOperator
+USNext == \/ ColorOnColor    \/ ColorOnWild    \/ ColorOnOperator
+          \/ WildOnColor     \/ WildOnWild     \/ WildOnOperator
           \/ OperatorOnColor \/ OperatorOnWild \/ OperatorOnOperator
-          \/ ControlOnColor \/ ControlOnWild \/ ControlOnOperator
+          \/ ControlOnColor  \/ ControlOnWild  \/ ControlOnOperator
 
 USSpec == USInit /\ [][USNext]_<<stack, head>>
 
@@ -149,5 +151,5 @@ THEOREM USSpec => [](USTypeOK /\ Len(stack) =< N)
 
 =============================================================================
 \* Modification History
-\* Last modified Mon Mar 29 20:08:38 CDT 2021 by quin
+\* Last modified Tue Mar 30 20:35:10 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
