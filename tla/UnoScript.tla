@@ -11,6 +11,7 @@ CONSTANT N
 VARIABLES stack, \* a sequence of StackCards
           head   \* an element of TapeCard
 
+\* Type invariant for the state variables
 USTypeOK == /\ stack \in Seq(StackCard)
             /\ head \in TapeCard
 
@@ -26,7 +27,7 @@ USInit == /\ stack = << >>
 
 \* If the stack is non-empty, return the first item,
 \* Otherwise return "wild"
-Top(s) == IF Len(s) > 0
+Top(s) == IF s /= << >>
           THEN Head(s)
           ELSE "wild"
 
@@ -52,15 +53,15 @@ draw2(s) ==
    s_base == Pop(s_x)
   IN { 
        << y >>       \o s_base, \* mathematical operators +,-,*,/
-                                \* and logical operators <, >, <=, >=, ==, !=, ||, &&
+                                \* and logical operators <, >, <=, >=, =, !=, ||, &&
        << x, y >>    \o s_base, \* swap
        << y, y, x >> \o s_base, \* dup
        << x, y, x >> \o s_base, \* over
        << x >>       \o s_base, \* drop, store, print
-       s_base,                  \* if/endif
-       s                        \* logical operator !
+                        s_base, \* if/endif
+                             s  \* logical operator !
      }
-     \union { << z, x >> \o s_base : z \in StackCard } \* load from memory
+     \union { << z, x >> \o s_base : z \in StackCard } \* load card from memory
 
 \* The draw4 operator takes a sequence as input
 \* and returns a set of all possible sequences after a draw4 operation is performed.
@@ -81,7 +82,7 @@ draw4(s) ==
        d2 \o d2 \o d1   \o s_base, \* 2Dup
        d1 \o d2 \o d1   \o s_base, \* 2Over
        d1               \o s_base, \* 2Drop
-       << c, a, b, d >> \o s_base, \* Rot
+       << c, a, b, d >> \o s_base, \* Rotate
        << d >>          \o s_base  \* if/else/endif
      }
 
@@ -152,10 +153,10 @@ USNext == \/ ColorOnColor    \/ ColorOnWild    \/ ColorOnOperator
 
 USSpec == USInit /\ [][USNext]_<<stack, head>>
 
-THEOREM USSpec => [](USTypeOK /\ Len(stack) =< N)
+THEOREM USSpec => [](USTypeOK /\ USStackInvariant /\ Len(stack) =< N)
 
 
 =============================================================================
 \* Modification History
-\* Last modified Tue Mar 30 20:57:57 CDT 2021 by quin
+\* Last modified Fri Apr 02 09:07:39 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
