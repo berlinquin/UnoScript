@@ -21,19 +21,25 @@ vars == << tape, head, top >>
 SeqOf(set, n) == UNION {[1..m -> set] : m \in 0..n}
 
 \* Type invariant for the state variables
-USTypeOK == /\ tape \in SeqOf(TapeCard, TAPE_N) \* the set of sequences of TapeCards with length < N
+USTypeOK == /\ SubSeq(tape, 2, Len(tape)-1) \in SeqOf(TapeCard, TAPE_N) \* the set of sequences of TapeCards with length < N
             /\ head \in 1..Len(tape)
             /\ top \in StackCard
 
 \* The tape is set to a program with length <= N,
 \* head starts over the first card in tape,
 \* and top is a wild card
-USInit == /\ tape \in SeqOf(TapeCard, TAPE_N)
+USInit == /\ tape \in { <<"start">> \o t \o <<"stop">> : t \in SeqOf(TapeCard, TAPE_N) }
           /\ head = 1
           /\ top = "wild"
 
-\* Return the card on tape at the index h
-Read(h) == tape[h]
+\* Initial transition allowed when head is on starting position
+HeadOnStart == /\ tape[head] = "start"
+               /\ head' = head + 1
+               /\ UNCHANGED << tape, top >>
+
+\* Head has reached the end of the tape: acceptable program termination
+HeadOnStop == /\ tape[head] = "stop"
+              /\ UNCHANGED vars
 
 \* Modify the current color card on the stack,
 \* or push a new color card
@@ -129,5 +135,5 @@ THEOREM USSpec => [](USTypeOK /\ Len(tape) =< TAPE_N)
 
 =============================================================================
 \* Modification History
-\* Last modified Sat Apr 03 09:45:51 CDT 2021 by quin
+\* Last modified Sat Apr 03 10:02:49 CDT 2021 by quin
 \* Created Fri Apr 02 10:32:07 CDT 2021 by quin
