@@ -37,7 +37,7 @@ HeadOnStart == /\ tape[head] = "start"
                /\ head' = head + 1
                /\ UNCHANGED << tape, top >>
 
-\* Head has reached the end of the tape: acceptable program termination
+\* Head has reached the end of the tape. Only this action is enabled.
 HeadOnStop == /\ tape[head] = "stop"
               /\ UNCHANGED vars
 
@@ -92,7 +92,7 @@ OperatorOnColor == /\ tape[head] = "operator"
 OperatorOnWild == /\ tape[head] = "operator"
                   /\ top = "wild"
                   /\ head' = head + 1
-                  /\ top = "operator"
+                  /\ top' = "operator"
                   /\ UNCHANGED tape
 
 \* Replace the operator on the stack
@@ -123,7 +123,8 @@ ControlOnOperator == /\ tape[head] = "control"
                      /\ head' = head + 1
                      /\ UNCHANGED << tape, top >>
 
-USNext == \/ ColorOnColor    \/ ColorOnWild    \/ ColorOnOperator
+USNext == \/ HeadOnStart     \/ HeadOnStop
+          \/ ColorOnColor    \/ ColorOnWild    \/ ColorOnOperator
           \/ WildOnColor     \/ WildOnWild     \/ WildOnOperator
           \/ OperatorOnColor \/ OperatorOnWild \/ OperatorOnOperator
           \/ ControlOnColor  \/ ControlOnWild  \/ ControlOnOperator
@@ -135,5 +136,5 @@ THEOREM USSpec => [](USTypeOK /\ Len(tape) =< TAPE_N)
 
 =============================================================================
 \* Modification History
-\* Last modified Sat Apr 03 10:02:49 CDT 2021 by quin
+\* Last modified Sat Apr 03 10:29:49 CDT 2021 by quin
 \* Created Fri Apr 02 10:32:07 CDT 2021 by quin
