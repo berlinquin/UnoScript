@@ -1,15 +1,15 @@
 ---- MODULE MC ----
 EXTENDS UnoScript, TLC
 
-\* CONSTANT definitions @modelParameterConstants:0N
-const_1617155911955125000 == 
+\* CONSTANT definitions @modelParameterConstants:0STACK_N
+const_1617754772328331000 == 
 8
 ----
 
 \* INVARIANT definition @modelCorrectnessInvariants:0
-inv_1617155911956126000 ==
-USTypeOK /\ Len(stack) =< (N)
+inv_1617754772329332000 ==
+USTypeOK /\ Len(stack) =< (STACK_N)
 ----
 =============================================================================
 \* Modification History
-\* Created Tue Mar 30 20:58:31 CDT 2021 by quin
+\* Created Tue Apr 06 19:19:32 CDT 2021 by quin

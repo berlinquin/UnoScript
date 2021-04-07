@@ -5,8 +5,8 @@ EXTENDS Integers, Sequences
 StackCard == { "color", "wild", "operator" }
 TapeCard  == StackCard \union { "control" }
 
-\* The maximum length of the stack
-CONSTANT N
+\* The maximum length of the stack to be considered
+CONSTANT STACK_N
 
 VARIABLES stack, \* a sequence of StackCards
           head   \* an element of TapeCard
@@ -38,10 +38,20 @@ Pop(s) == IF s = << >>
           ELSE Tail(s)
 
 \* Push item e onto stack s
-\* if this will not grow the stack past N elements
-Push(s, e) == IF Len(s) < (N-1)
-              THEN << e >> \o s
-              ELSE s
+Push(s, e) == << e >> \o s
+
+\* Take a sequence as input,
+\* returning the same sequence if it's below the upper bound on length,
+\* or the sequence reduced to STACK_N elements otherwise.
+RECURSIVE Prune(_)
+Prune(s) ==
+  IF Len(s) =< STACK_N
+  THEN s
+  ELSE Prune(Pop(s))
+
+\* Take a set of sequences as input
+\* and return all sequences with length leq the constant STACK_N.
+Prune_set(stacks) == { s \in stacks : Len(s) =< STACK_N }
 
 \* The draw2 operator takes a sequence as input
 \* and returns a set of all possible sequences after a draw2 operation is performed.
@@ -89,22 +99,22 @@ draw4(s) ==
 ColorOnColor == /\ head = "color"
                 /\ Top(stack) = "color"
                 /\ head' \in TapeCard
-                /\ stack' \in { stack, Push(stack, "color") }
+                /\ stack' \in Prune_set({ stack, Push(stack, "color") })
 
 ColorOnWild == /\ head = "color"
                /\ Top(stack) = "wild"
                /\ head' \in TapeCard
-               /\ stack' = Push(stack, "color")
+               /\ stack' = Prune(Push(stack, "color"))
 
 ColorOnOperator == /\ head = "color"
                    /\ Top(stack) = "operator"
                    /\ head' \in TapeCard
-                   /\ stack' \in { stack } \union draw2(stack) \union draw4(stack)
+                   /\ stack' \in Prune_set({ stack } \union draw2(stack) \union draw4(stack))
 
 WildOnColor == /\ head = "wild"
                /\ Top(stack) = "color"
                /\ head' \in TapeCard
-               /\ stack' = Push(stack, "wild")
+               /\ stack' = Prune(Push(stack, "wild"))
 
 WildOnWild == /\ head = "wild"
               /\ Top(stack) = "wild"
@@ -119,12 +129,12 @@ WildOnOperator == /\ head = "wild"
 OperatorOnColor == /\ head = "operator"
                    /\ Top(stack) = "color"
                    /\ head' \in TapeCard
-                   /\ stack' = Push(stack, "operator")
+                   /\ stack' = Prune(Push(stack, "operator"))
 
 OperatorOnWild == /\ head = "operator"
                   /\ Top(stack) = "wild"
                   /\ head' \in TapeCard
-                  /\ stack' = Push(stack, "operator")
+                  /\ stack' = Prune(Push(stack, "operator"))
 
 OperatorOnOperator == /\ head = "operator"
                       /\ Top(stack) = "operator"
@@ -134,7 +144,7 @@ OperatorOnOperator == /\ head = "operator"
 ControlOnColor == /\ head = "control"
                   /\ Top(stack) = "color"
                   /\ head' \in TapeCard
-                  /\ stack' = Tail(stack)
+                  /\ stack' = Pop(stack)
 
 ControlOnWild == /\ head = "control"
                  /\ Top(stack) = "wild"
@@ -153,10 +163,10 @@ USNext == \/ ColorOnColor    \/ ColorOnWild    \/ ColorOnOperator
 
 USSpec == USInit /\ [][USNext]_<<stack, head>>
 
-THEOREM USSpec => [](USTypeOK /\ USStackInvariant /\ Len(stack) =< N)
+THEOREM USSpec => [](USTypeOK /\ USStackInvariant /\ Len(stack) =< STACK_N)
 
 
 =============================================================================
 \* Modification History
-\* Last modified Fri Apr 02 09:07:39 CDT 2021 by quin
+\* Last modified Tue Apr 06 19:19:30 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
