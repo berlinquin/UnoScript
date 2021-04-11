@@ -1,4 +1,4 @@
------------------------------ MODULE UnoScript -----------------------------
+----------------------------- MODULE StackSpec -----------------------------
 EXTENDS Integers, Sequences
 
 \* Define the types of cards allowed in the stack and on the tape
@@ -19,7 +19,8 @@ USTypeOK == /\ stack \in Seq(StackCard)
 NoAdjacentOperators(s) == \A i \in 1..(Len(s)-1) : s[i] /= "operator" \/ s[i] /= s[i+1]
 
 \* Assert properties about the stack that should always be true
-USStackInvariant == /\ NoAdjacentOperators(stack)
+USStackInvariant == /\ Len(stack) =< STACK_N
+                    /\ NoAdjacentOperators(stack)
 
 \* The stack is initially empty, and head can be any card type
 USInit == /\ stack = << >>
@@ -163,10 +164,10 @@ USNext == \/ ColorOnColor    \/ ColorOnWild    \/ ColorOnOperator
 
 USSpec == USInit /\ [][USNext]_<<stack, head>>
 
-THEOREM USSpec => [](USTypeOK /\ USStackInvariant /\ Len(stack) =< STACK_N)
+THEOREM USSpec => [](USTypeOK /\ USStackInvariant)
 
 
 =============================================================================
 \* Modification History
-\* Last modified Tue Apr 06 19:19:30 CDT 2021 by quin
+\* Last modified Sat Apr 10 20:45:13 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin
