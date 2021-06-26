@@ -169,5 +169,5 @@ THEOREM USSpec => [](USTypeOK /\ USStackInvariant)
 
 =============================================================================
 \* Modification History
-\* Last modified Sat Apr 10 20:45:13 CDT 2021 by quin
+\* Last modified Sat Apr 10 20:48:45 CDT 2021 by quin
 \* Created Sat Mar 27 09:31:22 CDT 2021 by quin

@@ -1,4 +1,4 @@
------------------------------- MODULE TapeSpec ------------------------------
+----------------------------- MODULE UnoScript -----------------------------
 EXTENDS Integers, Sequences
 
 \* Define the types of cards allowed in the stack and on the tape
@@ -139,5 +139,5 @@ THEOREM USSpec => []USTypeOK
 
 =============================================================================
 \* Modification History
-\* Last modified Sat Jun 26 15:01:56 CDT 2021 by quin
-\* Created Fri Apr 02 10:32:07 CDT 2021 by quin
+\* Last modified Sat Jun 26 15:20:22 CDT 2021 by quin
+\* Created Sat Jun 26 15:19:07 CDT 2021 by quin
