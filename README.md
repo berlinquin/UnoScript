@@ -7,6 +7,7 @@ This repository holds:
 - The [language specification](specs.md)
 - An interpreter which implements the specification
 - A few [example programs](./examples)
+- A [formal specification](./tla) written in TLA+
 
 ## Building the Interpreter
 
