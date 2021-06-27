@@ -28,6 +28,7 @@ Later, I combined these into a single specification, found in *UnoScript.tla*.
 ## Checking the Specification
 
 To verify these specifications, you'll need to have the [TLA+ Toolbox](https://lamport.azurewebsites.net/tla/toolbox.html) installed.
-With the Toolbox installed, you can open the specification files and create a model to check.
-The model will require you to set values for the constants
-and expressions for the next-state function and invariants.
+With the Toolbox installed, you can open the specification files.
+Make sure to import the included models,
+which will initialize the constants, behavior spec, and invariants for the TLC model checker.
+
