@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.lamport.tla.toolbox.tool.tlc.modelCheck">
+    <stringAttribute key="configurationName" value="Model_2"/>
+    <intAttribute key="distributedFPSetCount" value="0"/>
+    <stringAttribute key="distributedNetworkInterface" value="172.17.0.1"/>
+    <intAttribute key="distributedNodesCount" value="1"/>
+    <stringAttribute key="distributedTLC" value="off"/>
+    <intAttribute key="maxHeapSize" value="25"/>
+    <stringAttribute key="modelBehaviorInit" value=""/>
+    <stringAttribute key="modelBehaviorNext" value=""/>
+    <stringAttribute key="modelBehaviorSpec" value="USSpec"/>
+    <intAttribute key="modelBehaviorSpecType" value="1"/>
+    <stringAttribute key="modelBehaviorVars" value="stack, tape, head"/>
+    <stringAttribute key="modelComments" value=""/>
+    <booleanAttribute key="modelCorrectnessCheckDeadlock" value="true"/>
+    <listAttribute key="modelCorrectnessInvariants">
+        <listEntry value="1TapeTypeOK /\ StackTypeOK /\ USStackInvariant"/>
+    </listAttribute>
+    <listAttribute key="modelCorrectnessProperties"/>
+    <listAttribute key="modelParameterConstants">
+        <listEntry value="TAPE_N;;4;0;0"/>
+        <listEntry value="STACK_N;;6;0;0"/>
+    </listAttribute>
+    <intAttribute key="modelVersion" value="20191005"/>
+    <intAttribute key="numberOfWorkers" value="1"/>
+    <stringAttribute key="result.mail.address" value=""/>
+    <stringAttribute key="specName" value="UnoScript"/>
+    <stringAttribute key="tlcResourcesProfile" value="local minimal"/>
+</launchConfiguration>
